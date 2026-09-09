@@ -1,0 +1,930 @@
+<title>Письмо под звездопадом</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Manrope:wght@400;600&family=Marck+Script&display=swap">
+<style>
+  :root {
+    --night-0: #120B1E;
+    --night-1: #241335;
+    --night-2: #3A1E4A;
+    --rose: #FF6F91;
+    --rose-deep: #C2385F;
+    --amber: #FFC178;
+    --amber-soft: #FFE3B8;
+    --cream: #FFF4E8;
+    --lilac: #C4AEDA;
+    --paper: #FFF6EA;
+    --ink: #4A2C3A;
+
+    --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --hand: "Marck Script", "Segoe Script", cursive;
+    --ui: "Manrope", "Segoe UI", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--night-0);
+    color: var(--cream);
+    font-family: var(--ui);
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── ночное небо ─────────────────────────────────────────── */
+  .sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(120% 70% at 50% 118%, rgba(255, 193, 120, .34) 0%, rgba(194, 56, 95, .16) 38%, transparent 70%),
+      radial-gradient(90% 60% at 50% -10%, var(--night-2) 0%, transparent 65%),
+      linear-gradient(180deg, var(--night-0) 0%, var(--night-1) 55%, #2E1636 100%);
+  }
+
+  #stars { position: fixed; inset: 0; z-index: 1; display: block; }
+
+  /* ── фонарики ────────────────────────────────────────────── */
+  .lanterns { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+
+  .lantern {
+    position: absolute;
+    bottom: -14vh;
+    animation: rise linear infinite;
+  }
+  .lantern i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 46% 46% 40% 40%;
+    background: linear-gradient(180deg, var(--amber-soft), #FF9E5E 70%, rgba(194, 56, 95, .8));
+    box-shadow: 0 0 22px 6px rgba(255, 168, 92, .45), 0 0 60px 18px rgba(255, 140, 80, .18);
+    animation: sway ease-in-out infinite alternate;
+  }
+  @keyframes rise { to { transform: translateY(-128vh); } }
+  @keyframes sway { from { transform: translateX(-9px) rotate(-3deg); } to { transform: translateX(9px) rotate(3deg); } }
+
+  /* ── сцена ───────────────────────────────────────────────── */
+  .stage {
+    position: relative;
+    z-index: 3;
+    isolation: isolate;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    padding: max(28px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+    text-align: center;
+    opacity: 0;
+    transform: translateY(16px) scale(.985);
+    transition: opacity .8s ease, transform .8s cubic-bezier(.22, .8, .3, 1);
+    pointer-events: none;
+  }
+  .screen.active { opacity: 1; transform: none; pointer-events: auto; }
+
+  .eyebrow {
+    font-family: var(--ui);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--lilac);
+    margin: 0;
+  }
+
+  .hint {
+    font-family: var(--ui);
+    font-size: .8rem;
+    letter-spacing: .14em;
+    color: rgba(196, 174, 218, .8);
+    margin: 0;
+    animation: breathe 2.8s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+
+  /* ── экран 1: конверт ────────────────────────────────────── */
+  .env {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    width: min(76vw, 288px);
+    aspect-ratio: 3 / 2;
+    position: relative;
+    perspective: 900px;
+    filter: drop-shadow(0 22px 40px rgba(8, 4, 16, .6));
+  }
+  .env__back, .env__flap, .env__letter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-radius: 8px;
+  }
+  .env__back {
+    top: 0; bottom: 0;
+    background: linear-gradient(160deg, #F3D9B8, #DCB27F 60%, #C79A63);
+  }
+  .env__letter {
+    left: 7%; right: 7%;
+    bottom: 8%;
+    height: 58%;
+    background: linear-gradient(180deg, var(--paper), #FBE7CE);
+    border-radius: 5px;
+    transform: translateY(6%);
+    transition: transform 1s cubic-bezier(.2, .9, .25, 1) .38s;
+    z-index: 2;
+    box-shadow: 0 -6px 18px rgba(74, 44, 58, .18);
+  }
+  .env__front {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: 8px;
+    background: linear-gradient(200deg, #FBEBD2, #E9C69A 55%, #D8AC79);
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .5);
+    clip-path: polygon(0 34%, 50% 74%, 100% 34%, 100% 100%, 0 100%);
+  }
+  .env__flap {
+    top: 0;
+    height: 68%;
+    background: linear-gradient(180deg, #FFF1DC, #EBCDA6 70%, #DDB98D);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 1s cubic-bezier(.5, -0.2, .3, 1.2), z-index 0s .5s;
+    z-index: 4;
+  }
+  .seal {
+    position: absolute;
+    left: 50%;
+    top: 56%;
+    width: 62px;
+    height: 62px;
+    margin: -31px 0 0 -31px;
+    border-radius: 50%;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+    color: #FFD9E2;
+    background: radial-gradient(circle at 34% 30%, #FF7E9D, var(--rose-deep) 62%, #8E1F41);
+    box-shadow: 0 0 0 3px rgba(255, 111, 145, .22), 0 6px 16px rgba(0, 0, 0, .45);
+    animation: pulse 2.4s ease-in-out infinite;
+    transition: transform .5s ease, opacity .5s ease;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(255, 111, 145, .22), 0 6px 16px rgba(0, 0, 0, .45); }
+    50% { transform: scale(1.07); box-shadow: 0 0 0 12px rgba(255, 111, 145, 0), 0 6px 16px rgba(0, 0, 0, .45); }
+  }
+  .env.opened .env__flap { transform: rotateX(-176deg); z-index: 1; }
+  .env.opened .env__letter { transform: translateY(-72%); }
+  .env.opened .seal { transform: scale(.3) rotate(28deg); opacity: 0; animation: none; }
+
+  /* ── экран 2: записка ────────────────────────────────────── */
+  .note {
+    width: min(88vw, 380px);
+    padding: 34px 26px 30px;
+    background: linear-gradient(178deg, var(--paper), #FAE6CE);
+    color: var(--ink);
+    border-radius: 4px;
+    transform: rotate(-1.2deg);
+    box-shadow: 0 24px 50px rgba(8, 4, 16, .55), inset 0 0 0 1px rgba(74, 44, 58, .08);
+    font-family: var(--hand);
+    font-size: 1.32rem;
+    line-height: 1.85;
+    text-align: left;
+  }
+  .note p { margin: 0 0 .9em; }
+  .note p:last-child { margin-bottom: 0; }
+  .note::after {
+    content: "";
+    display: block;
+    width: 54px;
+    height: 1px;
+    margin: 20px 0 0 auto;
+    background: rgba(74, 44, 58, .3);
+  }
+
+  /* ── экран 3: дата ───────────────────────────────────────── */
+  .date {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(2.9rem, 17vw, 4.6rem);
+    line-height: 1;
+    letter-spacing: .02em;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    color: var(--cream);
+    text-shadow: 0 0 34px rgba(255, 193, 120, .35);
+  }
+  .count {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--amber-soft);
+    margin: 0;
+  }
+  .count b {
+    font-weight: 500;
+    font-size: 1.9rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--amber);
+  }
+  .aside {
+    max-width: 30ch;
+    margin: 0;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: var(--lilac);
+  }
+
+  /* ── экран 4: финал ──────────────────────────────────────── */
+  .final {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 14vw, 4rem);
+    line-height: 1.12;
+    margin: 0;
+    text-wrap: balance;
+    color: var(--cream);
+    text-shadow: 0 0 40px rgba(255, 111, 145, .45);
+  }
+  .final em { font-style: italic; color: var(--rose); }
+  .sign {
+    font-family: var(--hand);
+    font-size: 1.5rem;
+    color: var(--amber-soft);
+    margin: 0;
+  }
+  .because {
+    max-width: 26ch;
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--lilac);
+  }
+
+  /* ── кнопки ──────────────────────────────────────────────── */
+  .btn {
+    appearance: none;
+    font-family: var(--ui);
+    font-size: .92rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: var(--cream);
+    min-height: 48px;
+    padding: 13px 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 244, 232, .3);
+    background: rgba(255, 244, 232, .07);
+    cursor: pointer;
+    transition: background .3s ease, border-color .3s ease, transform .2s ease;
+  }
+  .btn:active { transform: scale(.96); }
+  .btn--warm {
+    border-color: transparent;
+    color: #3A0E22;
+    background: linear-gradient(135deg, var(--amber-soft), var(--rose));
+    box-shadow: 0 10px 30px rgba(255, 111, 145, .3);
+  }
+  .btn--ghost {
+    font-size: .78rem;
+    font-weight: 400;
+    letter-spacing: .14em;
+    min-height: 44px;
+    padding: 10px 20px;
+    border-color: transparent;
+    background: none;
+    color: rgba(196, 174, 218, .72);
+  }
+
+  .sound {
+    position: fixed;
+    z-index: 6;
+    top: max(14px, env(safe-area-inset-top));
+    right: 14px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 244, 232, .18);
+    background: rgba(18, 11, 30, .5);
+    color: var(--amber-soft);
+    font-size: 17px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: opacity .4s ease, color .3s ease;
+  }
+  .sound[data-muted="true"] { color: rgba(196, 174, 218, .5); }
+
+  /* ── ворота ──────────────────────────────────────────────── */
+  .gate {
+    width: min(86vw, 320px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .gate__row { display: flex; flex-direction: column; gap: 7px; text-align: left; }
+  .gate__row span {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--lilac);
+  }
+  .gate input {
+    font-family: var(--ui);
+    font-size: 1rem;
+    color: var(--cream);
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 244, 232, .22);
+    background: rgba(18, 11, 30, .86);
+    transition: border-color .3s ease;
+  }
+  .gate input:focus { outline: none; border-color: var(--amber); }
+  .gate__msg {
+    min-height: 1.3em;
+    margin: 0;
+    font-size: .85rem;
+    color: var(--rose);
+  }
+  .gate.wrong { animation: shake .45s ease; }
+  @keyframes shake {
+    25% { transform: translateX(-7px); }
+    50% { transform: translateX(7px); }
+    75% { transform: translateX(-4px); }
+  }
+
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .seal, .hint { animation: none; }
+    .lantern { animation-duration: 90s; }
+    .lantern i { animation: none; }
+    .screen { transition-duration: .25s; }
+  }
+</style>
+
+<div class="sky" aria-hidden="true"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="lanterns" id="lanterns" aria-hidden="true"></div>
+
+<button class="sound" id="sound" type="button" aria-label="Звук" data-muted="false">♪</button>
+
+<main class="stage">
+  <section class="screen active" id="s0" aria-label="Вход">
+    <p class="eyebrow">письмо запечатано</p>
+    <form class="gate" id="gate" autocomplete="off">
+      <label class="gate__row">
+        <span>имя</span>
+        <input id="gate-login" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <label class="gate__row">
+        <span>пароль</span>
+        <input id="gate-pass" type="password" autocomplete="off" required>
+      </label>
+      <button class="btn btn--warm" type="submit" id="gate-btn">открыть</button>
+      <p class="gate__msg" id="gate-msg" role="status"></p>
+    </form>
+    <p class="hint">если письмо для тебя — ты знаешь</p>
+  </section>
+
+  <section class="screen" id="s1" aria-label="Конверт" hidden>
+    <p class="eyebrow" id="s1-eyebrow"></p>
+    <button class="env" id="envelope" type="button" aria-label="Открыть конверт">
+      <span class="env__back"></span>
+      <span class="env__letter"></span>
+      <span class="env__front"></span>
+      <span class="env__flap"></span>
+      <span class="seal">♥</span>
+    </button>
+    <p class="hint">коснись печати</p>
+  </section>
+
+  <section class="screen" id="s2" aria-label="Записка" hidden>
+    <div class="note" id="note"></div>
+    <button class="btn" type="button" data-go="s3">а что за день?</button>
+  </section>
+
+  <section class="screen" id="s3" aria-label="Дата" hidden>
+    <p class="eyebrow" id="s3-eyebrow"></p>
+    <p class="date" id="date"></p>
+    <p class="count" id="count"></p>
+    <p class="aside" id="aside"></p>
+    <button class="btn" type="button" data-go="s4">и что теперь?</button>
+  </section>
+
+  <section class="screen" id="s4" aria-label="Финал" hidden>
+    <p class="final" id="final"></p>
+    <p class="because" id="because"></p>
+    <p class="sign" id="sign"></p>
+    <p class="hint">коснись экрана</p>
+    <button class="btn btn--ghost" type="button" data-go="s1">ещё раз</button>
+  </section>
+</main>
+
+<script>
+  /* ═══ письмо зашифровано: ключ выводится из имени и пароля ═══
+     Плейнтекст лежит в content.json — он не попадает в git.
+     Пересобрать после правок: node build.mjs                    */
+  const VAULT = /*VAULT*/ {"salt":"C9bHMxBpyx4MmdM+C6LjfQ==","iv":"AAWcuG1WAozWBmA4","iterations":310000,"data":"9ZHTf5hRvbvVuEasam/vJVlL1nYXfgBKdbChjsh7VhfSgD1suoV788vIDWTYbNaWzfKDs78qsGp85OixrcICU1pLBR3jbREpXlPAcmos7/jwIFCYuSdNtBo7aPT9vXmjpDI0ekwHl/TA7W1+3KOrhgLAetu5WB0RQA1EkmtetVyjl3kvObBYxAOSRcJrqKCvA9TUsAISIspfBzqzCOLlg6hnIrFQtNwr6EhWXWvLIppuNJZu75QwFUPVeDXvX9KUMoVe/f3cLutSDqpNnc45i8e4RJXMNUTyixD2myZmRhAqTUuPh1/37j9fRmgUnfZwZco5RUSI91J3TAe/tgahJTtch7d0bb0LDdPbe8TvcsT7E8wEbgZiZ3/oAMD8UtUMZSk0PoAYAFfLAn9tsT2SmfSVpH2gO659M2DvKT8WGEhHbApydkt6fL6sc8+Sc3ay9vb8Az7Z/XXWDB8/Emf8o/+Hiutbovin1GtylKRAPkY12SdMzd4LGVicq19mWvAbA3pBMkgDBK5sA000LP15ucPNfwIg2f3i7LxK42nsqm+3gppbCF3SaVXhd7O8d2JK52m+M7ZD7LNP8KBuswfTyRPksf2x0ga1RL6OapOhlsd562hCLnGWEWHCu0UxDSInhyQ92iZlxihKdY5S/iwY7/boeOTrxU6Ma9lrNEmDLGZZzdbtDfUcStBiyG69SVAAJAE1ENOti+vJupEr1fXbkbWDrBtHv9iBTW53KWdr8veBgAQ5Xb+yYjPvq6BLHkMh4GinCNBxhnOE7tM8/ujWz6UL4QnI+m8Tc4FuXPeSUDDNEyDbiNHmFfFrZOu/6+VoNx4kmUe8XTIrPO/x88N3CbaXqE8hXbF2xKgSwtqVOziAkG0LSfGQBoIkxAfDcQ8lbnILSbM6yhpAAW6q9Y6nC8lEr/1bUbf+/n7OljZU35fdzAxfyRQJp+Uoty2kI9OYZtOTxWBQgVo/r0MitGIpMLxwEbGCs9e2cTN9/g0UHU4/ERSWNcn7tdsAirbqnJ+iTrLcTH1DsgzQXi+vbryb8ItDfIrxtE94/cYlV7U50cc+tqxXKK2rd9A6faVA55Voi2Z83WHRUzXqLbw0O9nanEIEC0KN0sw4nydzn61dARDZBwpOjvESmqNOtfSWpOBNfpzcLcTWR4ei5bp7axZqk1M+esZaGXR73nSygDaoRIt7wiSi+HgPnz0Mv0m3wKi/1E+c65sZW1HvU3p45LkvJHv64pJrvrTQ0VDG4D3mQyeUXJSe9HsBVivd63eZW17VJjaCwbD6/uyEsKI0BeVH23Ok/bvfih5rV0Wbt0xUpSggcAxim9FQgre4/ZJgYejbaBcDTiYiwnDvEW5TNdb32nJWlfAASX2xaXQZ"} /*VAULT*/;
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const small = Math.min(innerWidth, innerHeight) < 420;
+
+  function plural(n, one, few, many) {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+    return many;
+  }
+
+  const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
+
+  async function unseal(login, pass) {
+    const material = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(login.trim().toLowerCase() + "\u0000" + pass),
+      "PBKDF2", false, ["deriveKey"]
+    );
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: fromB64(VAULT.salt), iterations: VAULT.iterations, hash: "SHA-256" },
+      material,
+      { name: "AES-GCM", length: 256 },
+      false, ["decrypt"]
+    );
+    const plain = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: fromB64(VAULT.iv) }, key, fromB64(VAULT.data)
+    );
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  function fill(L) {
+    document.getElementById("s1-eyebrow").textContent = L.eyebrow1 || "";
+    document.getElementById("note").innerHTML = L.note.map(t => "<p>" + t + "</p>").join("");
+    document.getElementById("s3-eyebrow").textContent = L.eyebrow3 || "";
+    document.getElementById("aside").textContent = L.aside || "";
+    document.getElementById("final").innerHTML = L.final || "";
+    document.getElementById("sign").textContent = L.sign ? "— " + L.sign : "";
+
+    const met = new Date(L.metDate + "T00:00:00Z");
+    const now = new Date();
+    const days = Math.max(0, Math.floor(
+      (Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - met.getTime()) / 86400000
+    ));
+    const dd = String(met.getUTCDate()).padStart(2, "0");
+    const mm = String(met.getUTCMonth() + 1).padStart(2, "0");
+    document.getElementById("date").textContent = dd + "." + mm + "." + met.getUTCFullYear();
+    document.getElementById("count").innerHTML = days === 0
+      ? "сегодня"
+      : "с тех пор — <b>" + days + "</b> " + plural(days, "день", "дня", "дней");
+    document.getElementById("because").textContent = days === 0
+      ? L.becauseToday
+      : L.because.replace("{days}", days + " " + plural(days, "дня", "дней", "дней"));
+  }
+
+  const gate = document.getElementById("gate");
+  const gateMsg = document.getElementById("gate-msg");
+  const gateBtn = document.getElementById("gate-btn");
+
+  gate.addEventListener("submit", async e => {
+    e.preventDefault();
+    gateBtn.disabled = true;
+    gateMsg.style.color = "var(--lilac)";
+    gateMsg.textContent = "открываю…";
+    try {
+      const letter = await unseal(
+        document.getElementById("gate-login").value,
+        document.getElementById("gate-pass").value
+      );
+      fill(letter);
+      gateMsg.textContent = "";
+      if (!muted) { Music.start(); Music.resume(); }
+      show("s1");
+    } catch (err) {
+      gateMsg.style.color = "var(--rose)";
+      gateMsg.textContent = "не то. попробуй ещё раз";
+      gate.classList.add("wrong");
+      setTimeout(() => gate.classList.remove("wrong"), 500);
+    }
+    gateBtn.disabled = false;
+  });
+
+  /* ── фонарики ────────────────────────────────────────────── */
+  const lanternBox = document.getElementById("lanterns");
+  const lanternCount = reduced ? 3 : (small ? 6 : 9);
+  for (let i = 0; i < lanternCount; i++) {
+    const w = 12 + Math.random() * 16;
+    const el = document.createElement("div");
+    el.className = "lantern";
+    el.style.left = (4 + Math.random() * 90) + "%";
+    el.style.width = w + "px";
+    el.style.height = (w * 1.35) + "px";
+    el.style.opacity = (0.35 + Math.random() * 0.5).toFixed(2);
+    const dur = 22 + Math.random() * 22;
+    el.style.animationDuration = dur + "s";
+    el.style.animationDelay = (-Math.random() * dur) + "s";
+    const inner = document.createElement("i");
+    inner.style.animationDuration = (3 + Math.random() * 3).toFixed(1) + "s";
+    el.appendChild(inner);
+    lanternBox.appendChild(el);
+  }
+
+  /* ── небо: звёзды, метеоры, сердечки, конфетти ───────────── */
+  const cv = document.getElementById("stars");
+  const ctx = cv.getContext("2d");
+  let W = 0, H = 0, stars = [];
+  const hearts = [], confetti = [], meteors = [];
+  const MAX_HEARTS = small ? 70 : 130;
+  const PALETTE = ["#FF6F91", "#FFC178", "#FFF4E8", "#C4AEDA"];
+
+  function resize() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W + "px"; cv.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round((W * H) / (small ? 9000 : 6500));
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H * 0.74,
+        r: Math.random() * 1.25 + 0.25,
+        a: Math.random() * Math.PI * 2,
+        s: 0.4 + Math.random() * 1.4
+      });
+    }
+  }
+  addEventListener("resize", resize);
+  resize();
+
+  function heartPath(x, y, size, rot) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.scale(size / 16, size / 16);
+    ctx.beginPath();
+    ctx.moveTo(0, 5);
+    ctx.bezierCurveTo(-9, -3, -6, -12, 0, -7);
+    ctx.bezierCurveTo(6, -12, 9, -3, 0, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function spawnHearts(x, y, count) {
+    for (let i = 0; i < count && hearts.length < MAX_HEARTS; i++) {
+      hearts.push({
+        x: x + (Math.random() - 0.5) * 26,
+        y: y + (Math.random() - 0.5) * 18,
+        vx: (Math.random() - 0.5) * 0.9,
+        vy: -0.7 - Math.random() * 1.5,
+        size: 11 + Math.random() * 17,
+        rot: (Math.random() - 0.5) * 0.7,
+        spin: (Math.random() - 0.5) * 0.02,
+        life: 1,
+        decay: 0.006 + Math.random() * 0.007,
+        color: Math.random() < 0.72 ? "#FF6F91" : "#FFC178"
+      });
+    }
+  }
+
+  function burstConfetti(x, y, count) {
+    for (let i = 0; i < count; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const sp = 3 + Math.random() * 9;
+      confetti.push({
+        x: x, y: y,
+        vx: Math.cos(ang) * sp,
+        vy: Math.sin(ang) * sp - 3,
+        w: 4 + Math.random() * 6,
+        h: 7 + Math.random() * 8,
+        rot: Math.random() * Math.PI,
+        spin: (Math.random() - 0.5) * 0.24,
+        life: 1,
+        decay: 0.004 + Math.random() * 0.005,
+        color: PALETTE[(Math.random() * PALETTE.length) | 0]
+      });
+    }
+  }
+
+  let nextMeteor = 2500;
+  let ambient = 0;
+  let seaT = 0;
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min(48, now - last);
+    last = now;
+    ctx.clearRect(0, 0, W, H);
+
+    // звёзды
+    for (const st of stars) {
+      st.a += 0.0018 * dt * st.s;
+      const tw = 0.42 + Math.sin(st.a) * 0.36;
+      ctx.globalAlpha = tw;
+      ctx.fillStyle = st.r > 1.05 ? "#FFE3B8" : "#FFF4E8";
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // море
+    const seaY = H * 0.78;
+    const water = ctx.createLinearGradient(0, seaY, 0, H);
+    water.addColorStop(0, "rgba(74, 32, 60, .9)");
+    water.addColorStop(0.3, "rgba(38, 18, 52, .96)");
+    water.addColorStop(1, "#140B20");
+    ctx.fillStyle = water;
+    ctx.fillRect(0, seaY, W, H - seaY);
+
+    const hz = ctx.createLinearGradient(0, 0, W, 0);
+    hz.addColorStop(0, "rgba(255, 193, 120, 0)");
+    hz.addColorStop(0.5, "rgba(255, 220, 172, .55)");
+    hz.addColorStop(1, "rgba(255, 193, 120, 0)");
+    ctx.fillStyle = hz;
+    ctx.fillRect(0, seaY - 1, W, 1.4);
+
+    // дорожка света на воде
+    seaT += (dt / 1000) * (reduced ? 0.25 : 1);
+    const seaH = H - seaY;
+
+    const glow = ctx.createRadialGradient(W / 2, seaY, 0, W / 2, seaY, W * 0.55);
+    glow.addColorStop(0, "rgba(255, 200, 130, .22)");
+    glow.addColorStop(1, "rgba(255, 200, 130, 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, seaY, W, seaH);
+
+    const rows = Math.max(8, Math.round(seaH / 9));
+    for (let i = 0; i < rows; i++) {
+      const t = i / rows;
+      const y = seaY + 3 + t * seaH + Math.sin(i * 2.3) * 2;
+      const spread = 16 + t * t * W * 0.38;
+      const wob = Math.sin(seaT * 1.4 + i * 0.8) * (5 + t * 24);
+      const len = spread * (0.4 + 0.6 * Math.abs(Math.sin(seaT * 0.8 + i * 1.1)));
+      const a = Math.max(0, (0.15 - t * 0.09) * (0.45 + 0.55 * Math.sin(seaT * 1.7 + i)));
+      if (a < 0.006) continue;
+      const cx = W / 2 + wob;
+      const streak = ctx.createLinearGradient(cx - len / 2, 0, cx + len / 2, 0);
+      streak.addColorStop(0, "rgba(255, 193, 120, 0)");
+      streak.addColorStop(0.5, "rgba(255, 218, 168, " + a.toFixed(3) + ")");
+      streak.addColorStop(1, "rgba(255, 193, 120, 0)");
+      ctx.fillStyle = streak;
+      ctx.fillRect(cx - len / 2, y, len, 1.4 + t * 1.3);
+    }
+
+    // метеоры
+    if (!reduced) {
+      nextMeteor -= dt;
+      if (nextMeteor <= 0) {
+        nextMeteor = 3200 + Math.random() * 6000;
+        meteors.push({
+          x: Math.random() * W * 1.1 - W * 0.05,
+          y: -30 - Math.random() * 60,
+          vx: -2.4 - Math.random() * 1.6,
+          vy: 4.2 + Math.random() * 2.4,
+          len: 90 + Math.random() * 130,
+          life: 1
+        });
+      }
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
+        m.x += m.vx * dt / 16;
+        m.y += m.vy * dt / 16;
+        m.life -= 0.004 * dt / 16 * 3;
+        const nx = m.vx, ny = m.vy;
+        const mag = Math.hypot(nx, ny) || 1;
+        const g = ctx.createLinearGradient(m.x, m.y, m.x - nx / mag * m.len, m.y - ny / mag * m.len);
+        g.addColorStop(0, "rgba(255, 244, 232, " + Math.max(0, m.life) * 0.9 + ")");
+        g.addColorStop(1, "rgba(255, 244, 232, 0)");
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.7;
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y);
+        ctx.lineTo(m.x - nx / mag * m.len, m.y - ny / mag * m.len);
+        ctx.stroke();
+        if (m.life <= 0 || m.y > H + 120) meteors.splice(i, 1);
+      }
+    }
+
+    // фоновые сердечки на поздних экранах
+    if (current === "s3" || current === "s4") {
+      ambient -= dt;
+      if (ambient <= 0) {
+        ambient = current === "s4" ? 420 : 900;
+        spawnHearts(Math.random() * W, H + 20, 1);
+      }
+    }
+
+    // сердечки
+    for (let i = hearts.length - 1; i >= 0; i--) {
+      const p = hearts[i];
+      p.x += p.vx * dt / 16;
+      p.y += p.vy * dt / 16;
+      p.vy -= 0.006 * dt / 16;
+      p.rot += p.spin * dt / 16;
+      p.life -= p.decay * dt / 16;
+      if (p.life <= 0 || p.y < -60) { hearts.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.min(1, p.life * 1.4);
+      ctx.fillStyle = p.color;
+      heartPath(p.x, p.y, p.size, p.rot);
+    }
+
+    // конфетти
+    for (let i = confetti.length - 1; i >= 0; i--) {
+      const c = confetti[i];
+      c.vy += 0.16 * dt / 16;
+      c.vx *= 0.992;
+      c.x += c.vx * dt / 16;
+      c.y += c.vy * dt / 16;
+      c.rot += c.spin * dt / 16;
+      c.life -= c.decay * dt / 16;
+      if (c.life <= 0 || c.y > H + 60) { confetti.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.min(1, c.life * 1.5);
+      ctx.fillStyle = c.color;
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rot);
+      ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ── музыкальная шкатулка ────────────────────────────────── */
+  const Music = (function () {
+    let ac = null, master = null, timer = null, step = 0, nextTime = 0, started = false;
+    const BPM = 62, BEAT = 60 / BPM;
+    const CHORDS = [[65, 69, 72], [60, 64, 67], [62, 65, 69], [58, 62, 65]];
+    const TOP = [77, 76, 74, 72];
+    const ARP = [0, 1, 2, 1, 2, 0, 1, 2];
+
+    const freq = m => 440 * Math.pow(2, (m - 69) / 12);
+
+    function impulse(seconds) {
+      const rate = ac.sampleRate;
+      const len = Math.floor(rate * seconds);
+      const buf = ac.createBuffer(2, len, rate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++) {
+          d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+        }
+      }
+      return buf;
+    }
+
+    function note(midi, at, dur, gain) {
+      const osc = ac.createOscillator();
+      const shimmer = ac.createOscillator();
+      const g = ac.createGain();
+      osc.type = "triangle";
+      shimmer.type = "sine";
+      osc.frequency.value = freq(midi);
+      shimmer.frequency.value = freq(midi + 12);
+      shimmer.detune.value = 6;
+      const sg = ac.createGain();
+      sg.gain.value = 0.22;
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(gain, at + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+      osc.connect(g);
+      shimmer.connect(sg).connect(g);
+      g.connect(master);
+      osc.start(at); shimmer.start(at);
+      osc.stop(at + dur + 0.05); shimmer.stop(at + dur + 0.05);
+    }
+
+    function schedule() {
+      while (nextTime < ac.currentTime + 0.35) {
+        const bar = (step >> 3) % 4;
+        const i = step % 8;
+        const chord = CHORDS[bar];
+        note(chord[ARP[i]] + (i > 4 ? 12 : 0), nextTime, 1.5, 0.09 + Math.random() * 0.03);
+        if (i === 0) note(TOP[bar], nextTime, 2.6, 0.075);
+        if (i === 5 && bar % 2 === 1) note(TOP[bar] + 3, nextTime, 1.8, 0.05);
+        nextTime += BEAT / 2;
+        step++;
+      }
+    }
+
+    return {
+      start() {
+        if (started) return;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        started = true;
+        ac = new AC();
+        master = ac.createGain();
+        master.gain.value = 0;
+        const rev = ac.createConvolver();
+        rev.buffer = impulse(3.2);
+        const wet = ac.createGain();
+        wet.gain.value = 0.5;
+        master.connect(ac.destination);
+        master.connect(wet).connect(rev).connect(ac.destination);
+        master.gain.linearRampToValueAtTime(0.5, ac.currentTime + 2.5);
+        nextTime = ac.currentTime + 0.1;
+        schedule();
+        timer = setInterval(schedule, 60);
+      },
+      resume() { if (ac && ac.state === "suspended") ac.resume(); },
+      setMuted(m) {
+        if (!ac) return;
+        master.gain.cancelScheduledValues(ac.currentTime);
+        master.gain.linearRampToValueAtTime(m ? 0 : 0.5, ac.currentTime + 0.5);
+      }
+    };
+  })();
+
+  let muted = false;
+  try { muted = localStorage.getItem("sss-muted") === "1"; } catch (e) {}
+  if (reduced) muted = true;
+  const soundBtn = document.getElementById("sound");
+  function paintSound() {
+    soundBtn.dataset.muted = String(muted);
+    soundBtn.textContent = muted ? "♪̸" : "♪";
+    soundBtn.setAttribute("aria-label", muted ? "Включить музыку" : "Выключить музыку");
+  }
+  paintSound();
+  soundBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    muted = !muted;
+    try { localStorage.setItem("sss-muted", muted ? "1" : "0"); } catch (err) {}
+    paintSound();
+    if (!muted) { Music.start(); Music.resume(); }
+    Music.setMuted(muted);
+  });
+
+  /* ── переходы между экранами ─────────────────────────────── */
+  let current = "s0";
+  function show(id) {
+    if (id === current) return;
+    const from = document.getElementById(current);
+    const to = document.getElementById(id);
+    from.classList.remove("active");
+    setTimeout(() => { if (current !== from.id) from.hidden = true; }, 800);
+    current = id;
+    to.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => to.classList.add("active")));
+    if (id === "s4") {
+      setTimeout(() => {
+        burstConfetti(W / 2, H * 0.42, small ? 90 : 150);
+        spawnHearts(W / 2, H * 0.5, 14);
+      }, 420);
+    }
+    if (id === "s1") {
+      envelope.classList.remove("opened");
+      envelope.disabled = false;
+    }
+  }
+
+  document.querySelectorAll("[data-go]").forEach(b => {
+    b.addEventListener("click", e => {
+      e.stopPropagation();
+      const r = b.getBoundingClientRect();
+      spawnHearts(r.left + r.width / 2, r.top, 6);
+      show(b.dataset.go);
+    });
+  });
+
+  const envelope = document.getElementById("envelope");
+  envelope.addEventListener("click", () => {
+    if (envelope.classList.contains("opened")) return;
+    envelope.classList.add("opened");
+    envelope.disabled = true;
+    const r = envelope.getBoundingClientRect();
+    setTimeout(() => spawnHearts(r.left + r.width / 2, r.top + r.height * 0.4, 12), 380);
+    setTimeout(() => show("s2"), 1700);
+  });
+
+  /* ── касание в любом месте: музыка + сердечки ────────────── */
+  addEventListener("pointerdown", e => {
+    if (!muted) { Music.start(); Music.resume(); }
+    if (e.target.closest(".sound")) return;
+    spawnHearts(e.clientX, e.clientY, current === "s4" ? 7 : 4);
+  }, { passive: true });
+</script>
