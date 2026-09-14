@@ -445,7 +445,7 @@
   /* ═══ письмо зашифровано: ключ выводится из имени и пароля ═══
      Плейнтекст лежит в content.json — он не попадает в git.
      Пересобрать после правок: node build.mjs                    */
-  const VAULT = /*VAULT*/ {"salt":"C9bHMxBpyx4MmdM+C6LjfQ==","iv":"AAWcuG1WAozWBmA4","iterations":310000,"data":"9ZHTf5hRvbvVuEasam/vJVlL1nYXfgBKdbChjsh7VhfSgD1suoV788vIDWTYbNaWzfKDs78qsGp85OixrcICU1pLBR3jbREpXlPAcmos7/jwIFCYuSdNtBo7aPT9vXmjpDI0ekwHl/TA7W1+3KOrhgLAetu5WB0RQA1EkmtetVyjl3kvObBYxAOSRcJrqKCvA9TUsAISIspfBzqzCOLlg6hnIrFQtNwr6EhWXWvLIppuNJZu75QwFUPVeDXvX9KUMoVe/f3cLutSDqpNnc45i8e4RJXMNUTyixD2myZmRhAqTUuPh1/37j9fRmgUnfZwZco5RUSI91J3TAe/tgahJTtch7d0bb0LDdPbe8TvcsT7E8wEbgZiZ3/oAMD8UtUMZSk0PoAYAFfLAn9tsT2SmfSVpH2gO659M2DvKT8WGEhHbApydkt6fL6sc8+Sc3ay9vb8Az7Z/XXWDB8/Emf8o/+Hiutbovin1GtylKRAPkY12SdMzd4LGVicq19mWvAbA3pBMkgDBK5sA000LP15ucPNfwIg2f3i7LxK42nsqm+3gppbCF3SaVXhd7O8d2JK52m+M7ZD7LNP8KBuswfTyRPksf2x0ga1RL6OapOhlsd562hCLnGWEWHCu0UxDSInhyQ92iZlxihKdY5S/iwY7/boeOTrxU6Ma9lrNEmDLGZZzdbtDfUcStBiyG69SVAAJAE1ENOti+vJupEr1fXbkbWDrBtHv9iBTW53KWdr8veBgAQ5Xb+yYjPvq6BLHkMh4GinCNBxhnOE7tM8/ujWz6UL4QnI+m8Tc4FuXPeSUDDNEyDbiNHmFfFrZOu/6+VoNx4kmUe8XTIrPO/x88N3CbaXqE8hXbF2xKgSwtqVOziAkG0LSfGQBoIkxAfDcQ8lbnILSbM6yhpAAW6q9Y6nC8lEr/1bUbf+/n7OljZU35fdzAxfyRQJp+Uoty2kI9OYZtOTxWBQgVo/r0MitGIpMLxwEbGCs9e2cTN9/g0UHU4/ERSWNcn7tdsAirbqnJ+iTrLcTH1DsgzQXi+vbryb8ItDfIrxtE94/cYlV7U50cc+tqxXKK2rd9A6faVA55Voi2Z83WHRUzXqLbw0O9nanEIEC0KN0sw4nydzn61dARDZBwpOjvESmqNOtfSWpOBNfpzcLcTWR4ei5bp7axZqk1M+esZaGXR73nSygDaoRIt7wiSi+HgPnz0Mv0m3wKi/1E+c65sZW1HvU3p45LkvJHv64pJrvrTQ0VDG4D3mQyeUXJSe9HsBVivd63eZW17VJjaCwbD6/uyEsKI0BeVH23Ok/bvfih5rV0Wbt0xUpSggcAxim9FQgre4/ZJgYejbaBcDTiYiwnDvEW5TNdb32nJWlfAASX2xaXQZ"} /*VAULT*/;
+  const VAULT = /*VAULT*/ {"salt":"lg2eeDUH93N7G11NZ4D8xg==","iv":"3naxrsnKFzrXiRW1","iterations":310000,"data":"/ez75N0oPpYk3zhtSzgWvyZMxaD4RXDZXBHECT3glxJy+6AecbtWJqK1PfuYzJfguWRKV1iOIJAhW7/oSmVrp+585OQXpx3hP2h8mznTp7A2ZYpMk+EcICoiXD5KSc1FspekspTXOpPpobi/LLlp6wjOxYP3cG7ldMhFeEuUp61eYun9PDnCu+IzDLWMrdyc4y3yOXU7Vj57gCrJrA7jr2z8FRYne0UB/oFWKeYH1AzfCcQUYO6fTFl87mSNJwpD2zPnBIbAKHrgBcGTKcNVaaR/mwXqI/jLDnaCuxyjYnnS1VKlFpAjng6ayx0F84MTybXeEcsjTvlCbSRuMcm7A3Sn9JpTl/fvqlUV5jttD0tbfjEqoOUcpy94iLx5tv6SYJq0mPaGkq3shqAAThl110ZaA2kqiwU8o6NBLf71gZJ+OAsFsZYWgMtxyUV0O9op2/jXoLVdUkEdMkdUVMuW5X40NR3p2UFr0rFjl/GQqmD3X+klECjp1kyu9Bft1erumY37QIJ8SxZx13FIxYTFRe56Al185Z1KiqArE8SCJ2ORwpt2pedoMurddeGFmxbP08PJ4RdqJl4hMQpWikjljKmJ4kHRdqAxkNaIk3wIi/dgMW0/RDPcZeRBtrd0vEw8VfnOOreZY2Lx/byFBHOJbd4gpuNZwfJOuphY9RT5o6C0H6kNaZZRCz0fzwdLiTObOSmCsJQUkDsQ0UZlFQJuoQnUL8wdD/vAQSByKmjn4GCPFWWYPueW1WRvjnliQpklXUjdfeaWWab+/Mzndphfx2ukNTiyPYskE/nebldVqeFTJGYvIW2+QuxqQ9N6+9N3bpNu0ho+P/rg2M5ggiH0gxhl1Z1iHp5aniJjEun5Skqg+8JQ5g7Zt8IrcezRbFsPeMN1H+se2FuI2eE4g8YqQXR20+zXyKp7tt+aaw8KhXMHN+aTCvjDzcnIY2OiA66dxBhpFaj8i0+0r8ESkQ9UmtD8FPPk5wlJl0cTD1n6ikM4yoKj8y6e7r9sMxigCv0TQd7C0XZKOGx6PkYbtAl9M8DJ+wDy1Wlsb5WwSdeJ6Ww3r79S71I5gyKpCfJkJlmLkglHnB3Cu+nIvyxPXxpRqWJKNLQA+2N7Wmuh2e0OVPOaF/IL+T1EefqTXUIdFXKgUwJNoiJISK0t2Vhwaspk3atl1SCRQ9gWF1NnmwymC3zf/6Tq4sj+xh6H3jzirqNE6IQhstdoTQhheR2u2faHebJSzY1Bu4yS8z93v17CqD44HBZxRoa9CLrLlvXiXVFSj+TPGRZQaUwJ1VU4qFjml78bnYnm5q6kBzDUNrpulIkpGo+la5+YDQVe+YU2xYNV9LB86hMMBPdibjIkpYBr/mgcg1CmNmUE0bZU"} /*VAULT*/;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const small = Math.min(innerWidth, innerHeight) < 420;
@@ -456,6 +456,26 @@
     if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
     return many;
   }
+
+  /* ── счётчик ─────────────────────────────────────────────────
+     Скрипт GoatCounter не подключаем: пароль вводится на этой странице,
+     и чужой JS мог бы его прочитать. Шлём только пиксель с именем события.
+     Свои визиты отключаются один раз: открыть сайт с ?me в адресе.      */
+  const COUNTER = "";  // код GoatCounter, например "stella-letter"
+
+  function track(event) {
+    try {
+      if (new URLSearchParams(location.search).has("me")) localStorage.setItem("sss-no-count", "1");
+      if (localStorage.getItem("sss-no-count") === "1") return;
+    } catch (e) {}
+    if (!COUNTER) return;
+    const img = new Image();
+    img.src = "https://" + COUNTER + ".goatcounter.com/count"
+      + "?p=" + encodeURIComponent(event)
+      + "&t=" + encodeURIComponent(event)
+      + "&e=true&rnd=" + Math.random().toString(36).slice(2);
+  }
+  track("/open");
 
   const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
 
@@ -516,10 +536,12 @@
         document.getElementById("gate-pass").value
       );
       fill(letter);
+      track("/unlocked");
       gateMsg.textContent = "";
       if (!muted) { Music.start(); Music.resume(); }
       show("s1");
     } catch (err) {
+      track("/wrong-password");
       gateMsg.style.color = "var(--rose)";
       gateMsg.textContent = "не то. попробуй ещё раз";
       gate.classList.add("wrong");
@@ -881,6 +903,7 @@
 
   /* ── переходы между экранами ─────────────────────────────── */
   let current = "s0";
+  let finaleCounted = false;
   function show(id) {
     if (id === current) return;
     const from = document.getElementById(current);
@@ -891,6 +914,7 @@
     to.hidden = false;
     requestAnimationFrame(() => requestAnimationFrame(() => to.classList.add("active")));
     if (id === "s4") {
+      if (!finaleCounted) { finaleCounted = true; track("/finale"); }
       setTimeout(() => {
         burstConfetti(W / 2, H * 0.42, small ? 90 : 150);
         spawnHearts(W / 2, H * 0.5, 14);

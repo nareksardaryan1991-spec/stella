@@ -457,6 +457,26 @@
     return many;
   }
 
+  /* ── счётчик ─────────────────────────────────────────────────
+     Скрипт GoatCounter не подключаем: пароль вводится на этой странице,
+     и чужой JS мог бы его прочитать. Шлём только пиксель с именем события.
+     Свои визиты отключаются один раз: открыть сайт с ?me в адресе.      */
+  const COUNTER = "";  // код GoatCounter, например "stella-letter"
+
+  function track(event) {
+    try {
+      if (new URLSearchParams(location.search).has("me")) localStorage.setItem("sss-no-count", "1");
+      if (localStorage.getItem("sss-no-count") === "1") return;
+    } catch (e) {}
+    if (!COUNTER) return;
+    const img = new Image();
+    img.src = "https://" + COUNTER + ".goatcounter.com/count"
+      + "?p=" + encodeURIComponent(event)
+      + "&t=" + encodeURIComponent(event)
+      + "&e=true&rnd=" + Math.random().toString(36).slice(2);
+  }
+  track("/open");
+
   const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
 
   async function unseal(login, pass) {
@@ -516,10 +536,12 @@
         document.getElementById("gate-pass").value
       );
       fill(letter);
+      track("/unlocked");
       gateMsg.textContent = "";
       if (!muted) { Music.start(); Music.resume(); }
       show("s1");
     } catch (err) {
+      track("/wrong-password");
       gateMsg.style.color = "var(--rose)";
       gateMsg.textContent = "не то. попробуй ещё раз";
       gate.classList.add("wrong");
@@ -881,6 +903,7 @@
 
   /* ── переходы между экранами ─────────────────────────────── */
   let current = "s0";
+  let finaleCounted = false;
   function show(id) {
     if (id === current) return;
     const from = document.getElementById(current);
@@ -891,6 +914,7 @@
     to.hidden = false;
     requestAnimationFrame(() => requestAnimationFrame(() => to.classList.add("active")));
     if (id === "s4") {
+      if (!finaleCounted) { finaleCounted = true; track("/finale"); }
       setTimeout(() => {
         burstConfetti(W / 2, H * 0.42, small ? 90 : 150);
         spawnHearts(W / 2, H * 0.5, 14);
